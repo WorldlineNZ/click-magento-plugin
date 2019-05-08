@@ -9,7 +9,7 @@
         "magento/module-quote": "~100.0|~101.0"
     },
     "type": "magento2-module",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "license": "MIT",
     "autoload": {
         "files": [
