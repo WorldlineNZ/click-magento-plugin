@@ -6,7 +6,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 
-abstract class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
+class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
 
     // disable CSRF protection on these inbound routes
