@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <!-- Guest Payment -->
+    <route url="/V1/guest-carts/paymark/redirect" method="GET">
+        <service class="Onfire\Paymark\Api\ClickManagementInterface" method="getRedirectLink"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <!-- Normal User Payment -->
+    <route url="/V1/carts/mine/paymark/redirect" method="GET">
+        <service class="Onfire\Paymark\Api\ClickManagementInterface" method="getRedirectLink"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+    </route>
+
+</routes>
