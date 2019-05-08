@@ -1,6 +1,8 @@
 # Paymark payment module for Magento 2.x
 This is a Paymark payment module for Magento 2. This module currently supports Paymark Click only.
 
+Tested on Magento 2.3.x only.
+
 ## Installation
 
 To install this module use the following composer command:
