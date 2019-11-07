@@ -59,6 +59,15 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
             }
 
             $params = $transaction;
+        } else {
+            $transaction = $apiHelper->getTransaction($params['TransactionId']);
+            if(!$transaction) {
+                $helper->log(__METHOD__. " Unable to find transaction");
+                $helper->addMessageError('Unable to find transaction');
+                return $this->_redirect("checkout/cart");
+            }
+
+            $params = (array) $transaction;
         }
 
         if($result = $helper->processTransaction($params)) {

@@ -139,6 +139,17 @@ class ApiHelper extends AbstractHelper
     }
 
     /**
+     * Get a transaction by id via the API
+     *
+     * @param $transactionId
+     * @return mixed
+     */
+    public function getTransaction($transactionId)
+    {
+        return $this->_paymarkApi->getTransaction($transactionId);
+    }
+
+    /**
      * Return store name for payment reference
      *
      * @return mixed
