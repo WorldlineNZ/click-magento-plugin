@@ -12,7 +12,11 @@ define(
     function (Component, paymarkRedirectAction) {
         'use strict';
 
+        var paymarkConfig = window.checkoutConfig.payment.paymark;
+
         return Component.extend({
+            clickLogo: paymarkConfig.logo,
+
             defaults: {
                 template: 'Onfire_Paymark/payment/click'
             },

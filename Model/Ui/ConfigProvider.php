@@ -9,7 +9,25 @@ use Magento\Checkout\Model\ConfigProviderInterface;
  */
 final class ConfigProvider implements ConfigProviderInterface
 {
+
+    /**
+     * @var \Magento\Framework\View\Asset\Repository
+     */
+    private $_assetRepo;
+
     const CODE = 'paymark';
+
+    /**
+     * ConfigProvider constructor.
+     *
+     * @param \Magento\Framework\View\Asset\Repository $assetRepo
+     */
+    public function __construct(
+        \Magento\Framework\View\Asset\Repository $assetRepo
+    )
+    {
+        $this->_assetRepo = $assetRepo;
+    }
 
     /**
      * Retrieve assoc array of checkout configuration
@@ -18,6 +36,23 @@ final class ConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
-        return [];
+        return [
+            'payment' => [
+                self::CODE => [
+                    'logo' => $this->getClickLogo(),
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Get absolute path to the Online EFTPOS logo
+     *
+     * @return string
+     */
+    public function getClickLogo()
+    {
+        $url =  $this->_assetRepo->getUrl("Onfire_Paymark::images/logo.svg");;
+        return $url;
     }
 }
