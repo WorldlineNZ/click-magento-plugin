@@ -7,7 +7,7 @@ Tested on Magento 2.3.x only.
 
 To install this module use the following composer command:
 
-`composer require onfire/paymark`
+`composer require paymark/click`
 
 Alternatively download the package and put the files into this folder in your Magento directory: `app/Onfire/Paymark`
 
