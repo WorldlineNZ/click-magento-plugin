@@ -1,5 +1,5 @@
 <?php
-namespace Onfire\Paymark\Logger\Handler;
+namespace Onfire\PaymarkClick\Logger\Handler;
 
 use \Magento\Framework\Logger\Handler\Base;
 use \Monolog\Logger;

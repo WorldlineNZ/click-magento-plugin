@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\Paymark\Gateway\Command;
+namespace Onfire\PaymarkClick\Gateway\Command;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\CommandInterface;
@@ -25,11 +25,11 @@ class InitializeCommand implements CommandInterface
     public function execute(array $commandSubject)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $helper = $objectManager->create("\Onfire\Paymark\Helper\Helper");
+        $helper = $objectManager->create("\Onfire\PaymarkClick\Helper\Helper");
         $helper->log(__METHOD__. ' execute');
 
-        /** @var \Onfire\Paymark\Helper\ApiHelper $apiHelper */
-        $apiHelper = $objectManager->create("\Onfire\Paymark\Helper\ApiHelper");
+        /** @var \Onfire\PaymarkClick\Helper\ApiHelper $apiHelper */
+        $apiHelper = $objectManager->create("\Onfire\PaymarkClick\Helper\ApiHelper");
 
         $orderState = $commandSubject['stateObject'];
 

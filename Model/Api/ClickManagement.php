@@ -1,17 +1,17 @@
 <?php
 
-namespace Onfire\Paymark\Model\Api;
+namespace Onfire\PaymarkClick\Model\Api;
 
 class ClickManagement
 {
 
     /**
-     *@var \Onfire\Paymark\Helper\ApiHelper
+     *@var \Onfire\PaymarkClick\Helper\ApiHelper
      */
     private $_api;
 
     /**
-     * @var \Onfire\Paymark\Helper\Helper
+     * @var \Onfire\PaymarkClick\Helper\Helper
      */
     private $_helper;
 
@@ -29,10 +29,10 @@ class ClickManagement
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
-        $this->_helper = $objectManager->create("\Onfire\Paymark\Helper\Helper");
+        $this->_helper = $objectManager->create("\Onfire\PaymarkClick\Helper\Helper");
         $this->_helper->log('Click management');
 
-        $this->_api = $objectManager->create("\Onfire\Paymark\Helper\ApiHelper");
+        $this->_api = $objectManager->create("\Onfire\PaymarkClick\Helper\ApiHelper");
 
         $this->_checkoutSession = $checkoutSession;
     }

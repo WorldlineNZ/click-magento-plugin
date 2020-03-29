@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\Paymark\Block;
+namespace Onfire\PaymarkClick\Block;
 
 use Magento\Payment\Block\ConfigurableInfo;
 

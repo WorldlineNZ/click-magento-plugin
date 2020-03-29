@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\Paymark\Model\Ui;
+namespace Onfire\PaymarkClick\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 
@@ -52,7 +52,7 @@ final class ConfigProvider implements ConfigProviderInterface
      */
     public function getClickLogo()
     {
-        $url =  $this->_assetRepo->getUrl("Onfire_Paymark::images/logo.svg");;
+        $url =  $this->_assetRepo->getUrl("Onfire_PaymarkClick::images/logo.svg");;
         return $url;
     }
 }

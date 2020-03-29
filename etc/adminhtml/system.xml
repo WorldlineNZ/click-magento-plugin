@@ -9,7 +9,7 @@
     <system>
         <section id="payment">
             <group id="paymark" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Paymark</label>
+                <label>Paymark Click</label>
 
                 <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled</label>
@@ -48,7 +48,7 @@
 
                 <field id="payment_action" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Payment Action</label>
-                    <source_model>Onfire\Paymark\Model\Adminhtml\Source\PaymentAction</source_model>
+                    <source_model>Onfire\PaymarkClick\Model\Adminhtml\Source\PaymentAction</source_model>
                 </field>
 
                 <field id="allowspecific" translate="label" type="allowspecific" sortOrder="130" showInDefault="9"

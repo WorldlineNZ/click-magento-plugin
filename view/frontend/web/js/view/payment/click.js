@@ -17,7 +17,7 @@ define(
         rendererList.push(
             {
                 type: 'paymark',
-                component: 'Onfire_Paymark/js/view/payment/method-renderer/click'
+                component: 'Onfire_PaymarkClick/js/view/payment/method-renderer/click'
             }
         );
         /** Add view logic here if needed */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\Paymark\Controller\Click;
+namespace Onfire\PaymarkClick\Controller\Click;
 
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
@@ -30,8 +30,8 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
         $checkoutSession = $objectManager->get('\Magento\Checkout\Model\Session');
-        $apiHelper = $objectManager->get("\Onfire\Paymark\Helper\ApiHelper");
-        $helper = $objectManager->create("\Onfire\Paymark\Helper\Helper");
+        $apiHelper = $objectManager->get("\Onfire\PaymarkClick\Helper\ApiHelper");
+        $helper = $objectManager->create("\Onfire\PaymarkClick\Helper\Helper");
 
         $helper->log(__METHOD__. " execute response");
 

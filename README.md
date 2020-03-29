@@ -15,7 +15,7 @@ After installing the files please run the following commands to enable the modul
 
 ```
 #enable the module
-php bin/magento module:enable Onfire_Paymark
+php bin/magento module:enable Onfire_PaymarkClick
 
 #run magento setup
 php bin/magento setup:upgrade

@@ -5,7 +5,7 @@
 
     <!-- Guest Payment -->
     <route url="/V1/guest-carts/paymark/redirect" method="GET">
-        <service class="Onfire\Paymark\Api\ClickManagementInterface" method="getRedirectLink"/>
+        <service class="Onfire\PaymarkClick\Api\ClickManagementInterface" method="getRedirectLink"/>
         <resources>
             <resource ref="anonymous" />
         </resources>
@@ -13,7 +13,7 @@
 
     <!-- Normal User Payment -->
     <route url="/V1/carts/mine/paymark/redirect" method="GET">
-        <service class="Onfire\Paymark\Api\ClickManagementInterface" method="getRedirectLink"/>
+        <service class="Onfire\PaymarkClick\Api\ClickManagementInterface" method="getRedirectLink"/>
         <resources>
             <resource ref="self" />
         </resources>

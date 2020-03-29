@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\Paymark\Logger;
+namespace Onfire\PaymarkClick\Logger;
 
 use \Monolog\Logger;
 
