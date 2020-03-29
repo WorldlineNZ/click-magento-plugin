@@ -1,6 +1,6 @@
-#Software licence
+# Software licence
 
-##Magento2.0 plugin for Click and/or Online EFTPOS (the “Software”)
+## Magento2.0 plugin for Click and/or Online EFTPOS (the “Software”)
 
 Click and Online EFTPOS are payment solutions provided by Paymark Limited (“Paymark”, “we” and “our”) for the transmission of data relating to online payment card transactions and “Online EFTPOS” transactions, incorporating certain software owned or licensed by Paymark (including all upgrades, updates, alterations and modifications to such software by or on behalf of Paymark from time to time) and including access (via the internet) to the Paymark-hosted server.
 
