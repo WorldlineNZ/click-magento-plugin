@@ -1,22 +1,22 @@
 <?php
 
-namespace Onfire\PaymarkClick\Helper;
+namespace Paymark\PaymarkClick\Helper;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Onfire\PaymarkClick\Model\Adminhtml\Source\PaymentAction;
+use Paymark\PaymarkClick\Model\Adminhtml\Source\PaymentAction;
 
 class ApiHelper extends AbstractHelper
 {
 
     /**
-     * @var \Onfire\PaymarkClick\Helper\Helper
+     * @var \Paymark\PaymarkClick\Helper\Helper
      */
     private $_helper;
 
     /**
-     * @var \Onfire\PaymarkClick\Model\PaymarkAPI
+     * @var \Paymark\PaymarkClick\Model\PaymarkAPI
      */
     private $_paymarkApi;
 
@@ -36,9 +36,9 @@ class ApiHelper extends AbstractHelper
 
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
-        $this->_helper = $this->_objectManager->create("\Onfire\PaymarkClick\Helper\Helper");
+        $this->_helper = $this->_objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
 
-        $this->_paymarkApi = $this->_objectManager->create("\Onfire\PaymarkClick\Model\PaymarkAPI");
+        $this->_paymarkApi = $this->_objectManager->create("\Paymark\PaymarkClick\Model\PaymarkAPI");
     }
 
     /**
@@ -119,7 +119,7 @@ class ApiHelper extends AbstractHelper
             foreach($transactions as $transaction) {
                 if(
                     $transaction->particular == $incrementId &&
-                    $transaction->status == \Onfire\PaymarkClick\Helper\Helper::PAYMENT_SUCCESS
+                    $transaction->status == \Paymark\PaymarkClick\Helper\Helper::PAYMENT_SUCCESS
                 ) {
                     //found successful transaction for this order
                     $returnTransaction = $transaction;

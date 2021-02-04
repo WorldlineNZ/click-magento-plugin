@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\PaymarkClick\Model;
+namespace Paymark\PaymarkClick\Model;
 
 use Magento\Framework\Encryption\EncryptorInterface;
 use Zend\Http\Client;
@@ -10,7 +10,7 @@ class PaymarkAPI
 {
 
     /**
-     * @var \Onfire\PaymarkClick\Helper\Helper
+     * @var \Paymark\PaymarkClick\Helper\Helper
      */
     private $_helper;
 
@@ -78,7 +78,7 @@ class PaymarkAPI
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
-        $this->_helper = $objectManager->create("\Onfire\PaymarkClick\Helper\Helper");
+        $this->_helper = $objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
 
         $this->_prod = $this->_helper->getConfig('debug') == 0 ? true : false;
 

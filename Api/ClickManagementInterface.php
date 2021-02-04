@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\PaymarkClick\Api;
+namespace Paymark\PaymarkClick\Api;
 
 /**
  * @api

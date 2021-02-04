@@ -7,7 +7,7 @@
 define(
     [
         'Magento_Checkout/js/view/payment/default',
-        'Onfire_PaymarkClick/js/action/paymark-redirect'
+        'Paymark_PaymarkClick/js/action/paymark-redirect'
     ],
     function (Component, paymarkRedirectAction) {
         'use strict';
@@ -18,7 +18,7 @@ define(
             clickLogo: paymarkConfig.logo,
 
             defaults: {
-                template: 'Onfire_PaymarkClick/payment/click'
+                template: 'Paymark_PaymarkClick/payment/click'
             },
 
             redirectAfterPlaceOrder: false,

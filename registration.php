@@ -6,6 +6,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Onfire_PaymarkClick',
+    'Paymark_PaymarkClick',
     __DIR__
 );

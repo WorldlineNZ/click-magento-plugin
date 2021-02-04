@@ -9,13 +9,13 @@ To install this module use the following composer command:
 
 `composer require paymark/click`
 
-Alternatively download the package and put the files into this folder in your Magento directory: `app/Onfire/Paymark`
+Alternatively download the package and put the files into this folder in your Magento directory: `app/Paymark/PaymarkClick`
 
 After installing the files please run the following commands to enable the module:
 
 ```
 #enable the module
-php bin/magento module:enable Onfire_PaymarkClick
+php bin/magento module:enable Paymark_PaymarkClick
 
 #run magento setup
 php bin/magento setup:upgrade

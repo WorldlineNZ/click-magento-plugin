@@ -10,9 +10,9 @@
     <!-- Payment Method Facade configuration -->
     <virtualType name="PaymarkFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\Onfire\PaymarkClick\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">\Paymark\PaymarkClick\Model\Ui\ConfigProvider::CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
-            <argument name="infoBlockType" xsi:type="string">Onfire\PaymarkClick\Block\Info</argument>
+            <argument name="infoBlockType" xsi:type="string">Paymark\PaymarkClick\Block\Info</argument>
             <argument name="valueHandlerPool" xsi:type="object">PaymarkValueHandlerPool</argument>
             <argument name="commandPool" xsi:type="object">PaymarkCommandPool</argument>
         </arguments>
@@ -21,15 +21,15 @@
     <!-- Configuration reader -->
     <virtualType name="PaymarkConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">\Onfire\PaymarkClick\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">\Paymark\PaymarkClick\Model\Ui\ConfigProvider::CODE</argument>
         </arguments>
     </virtualType>
 
-    <type name="Onfire\PaymarkClick\Logger\PaymentLogger">
+    <type name="Paymark\PaymarkClick\Logger\PaymentLogger">
         <arguments>
             <argument name="name" xsi:type="string">Paymark</argument>
             <argument name="handlers" xsi:type="array">
-                <item name="system" xsi:type="object">Onfire\PaymarkClick\Logger\Handler\Paymark</item>
+                <item name="system" xsi:type="object">Paymark\PaymarkClick\Logger\Handler\Paymark</item>
             </argument>
         </arguments>
     </type>
@@ -53,7 +53,7 @@
     </virtualType>
 
     <!-- Initialize command -->
-    <virtualType name="PaymarkInitializeCommand" type="Onfire\PaymarkClick\Gateway\Command\InitializeCommand"></virtualType>
+    <virtualType name="PaymarkInitializeCommand" type="Paymark\PaymarkClick\Gateway\Command\InitializeCommand"></virtualType>
 
     <!-- Value handlers infrastructure -->
     <virtualType name="PaymarkValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
@@ -69,12 +69,12 @@
         </arguments>
     </virtualType>
 
-    <type name="Onfire\PaymarkClick\Block\Info">
+    <type name="Paymark\PaymarkClick\Block\Info">
         <arguments>
             <argument name="config" xsi:type="object">PaymarkConfig</argument>
         </arguments>
     </type>
 
-    <preference for="Onfire\PaymarkClick\Api\ClickManagementInterface" type="Onfire\PaymarkClick\Model\Api\ClickManagement" />
+    <preference for="Paymark\PaymarkClick\Api\ClickManagementInterface" type="Paymark\PaymarkClick\Model\Api\ClickManagement" />
 
 </config>
