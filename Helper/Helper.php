@@ -1,6 +1,6 @@
 <?php
 
-namespace Onfire\PaymarkClick\Helper;
+namespace Paymark\PaymarkClick\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
@@ -46,7 +46,7 @@ class Helper
     private $_orderSender;
 
     /**
-     * @var \Onfire\PaymarkClick\Logger\PaymentLogger
+     * @var \Paymark\PaymarkClick\Logger\PaymentLogger
      */
     private $_logger;
 
@@ -88,7 +88,7 @@ class Helper
 
         $this->_checkoutSession = $this->_objectManager->get('\Magento\Checkout\Model\Session');
 
-        $this->_logger = $this->_objectManager->get("\Onfire\PaymarkClick\Logger\PaymentLogger");
+        $this->_logger = $this->_objectManager->get("\Paymark\PaymarkClick\Logger\PaymentLogger");
     }
 
     /**
