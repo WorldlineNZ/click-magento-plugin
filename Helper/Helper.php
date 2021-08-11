@@ -60,6 +60,8 @@ class Helper
 
     const TYPE_AUTH = 'AUTHORISATION';
 
+    const TYPE_OE_PAYMENT = 'OE_PAYMENT';
+
     /**
      * Helper constructor.
      * @param ScopeConfigInterface $scopeConfig
@@ -159,7 +161,7 @@ class Helper
 
         try {
             if($status == self::PAYMENT_UNKNOWN) {
-                // unkown status, what do we do here??
+                // unknown status, what do we do here?
                 //@todo handle unknown response - do we wait and retry?
                 $this->addMessageError('Payment failed with unknown error');
 
@@ -254,7 +256,7 @@ class Helper
 
         $order->setCanSendNewEmailFlag(true);
 
-        if ($type == self::TYPE_PURCHASE) {
+        if ($type == self::TYPE_PURCHASE || $type == self::TYPE_OE_PAYMENT) {
 
             // prepare invoice and update order status
             $invoice = $order->prepareInvoice();
