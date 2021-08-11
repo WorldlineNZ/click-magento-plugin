@@ -54,13 +54,19 @@ class ApiHelper extends AbstractHelper
     {
         $order = $payment->getOrder();
 
+        // set order state to pending payment
+        $orderState->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+        $orderState->setStatus(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+
         $return = $this->_getUrl('paymark/click/response/', ['_secure' => true]);
 
         try {
+
             $authOnly = ($paymentAction == PaymentAction::ACTION_AUTHORIZE) ? true : false;
 
             $reference = $this->getStoreName() . ' Payment';
 
+            // create new payment redirect url
             $transaction = $this->_paymarkApi->createTransaction(
                 $order->getBaseGrandTotal(),
                 $return,
@@ -83,8 +89,6 @@ class ApiHelper extends AbstractHelper
             throw new LocalizedException(__("Failed to generate redirect URL - please check your errors logs or contact support"));
         }
 
-        $orderState->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
-        $orderState->setStatus(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
         $orderState->setIsNotified(false);
 
         $this->_helper->log(__METHOD__. " Order set as pending");

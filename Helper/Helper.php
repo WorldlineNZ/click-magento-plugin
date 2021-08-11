@@ -60,6 +60,8 @@ class Helper
 
     const TYPE_AUTH = 'AUTHORISATION';
 
+    const TYPE_OE_PAYMENT = 'OE_PAYMENT';
+
     /**
      * Helper constructor.
      * @param ScopeConfigInterface $scopeConfig
@@ -159,7 +161,7 @@ class Helper
 
         try {
             if($status == self::PAYMENT_UNKNOWN) {
-                // unkown status, what do we do here??
+                // unknown status, what do we do here?
                 //@todo handle unknown response - do we wait and retry?
                 $this->addMessageError('Payment failed with unknown error');
 
@@ -200,6 +202,7 @@ class Helper
             }
         } catch (\Exception $e) {
             $this->addMessageError('Payment failed with error: ' . $e->getMessage());
+            $this->log(__METHOD__. " " . $incrementId . " " . $e->getMessage());
             return false;
         }
 
@@ -237,10 +240,23 @@ class Helper
         $type = $this->getParamInsensitive('Type', $params);
         $transID =  $this->getParamInsensitive('TransactionId', $params);
         $amount = $this->getParamInsensitive('Amount', $params);
+        $surcharge = $this->getParamInsensitive('surcharge', $params);
+
+        // if there has been a surcharge, remove it from the total amount
+        $amountFinal = (!empty($surcharge) && $surcharge > 0) ? ($amount - $surcharge) : $amount;
+
+        // multiply totals by 100 to get integers for comparison
+        $amountCheck = bcmul($amountFinal, 100);
+        $orderTotalCheck = bcmul($order->getGrandTotal(), 100);
+
+        // check if the order amount and the total charge amount match
+        if($amountCheck != $orderTotalCheck) {
+            throw new \Exception('Payment and order totals do not match');
+        }
 
         $order->setCanSendNewEmailFlag(true);
 
-        if ($type == self::TYPE_PURCHASE) {
+        if ($type == self::TYPE_PURCHASE || $type == self::TYPE_OE_PAYMENT) {
 
             // prepare invoice and update order status
             $invoice = $order->prepareInvoice();
@@ -260,7 +276,7 @@ class Helper
             // add comment to order history
             $message = __(
                 'Captured and invoiced amount of %1 for transaction %2',
-                $amount,
+                $amountFinal,
                 $transID
             );
 
