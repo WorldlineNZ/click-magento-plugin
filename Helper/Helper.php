@@ -200,6 +200,7 @@ class Helper
             }
         } catch (\Exception $e) {
             $this->addMessageError('Payment failed with error: ' . $e->getMessage());
+            $this->log(__METHOD__. " " . $incrementId . " " . $e->getMessage());
             return false;
         }
 
@@ -237,6 +238,19 @@ class Helper
         $type = $this->getParamInsensitive('Type', $params);
         $transID =  $this->getParamInsensitive('TransactionId', $params);
         $amount = $this->getParamInsensitive('Amount', $params);
+        $surcharge = $this->getParamInsensitive('surcharge', $params);
+
+        // if there has been a surcharge, remove it from the total amount
+        $amountFinal = (!empty($surcharge) && $surcharge > 0) ? ($amount - $surcharge) : $amount;
+
+        // multiply totals by 100 to get integers for comparison
+        $amountCheck = bcmul($amountFinal, 100);
+        $orderTotalCheck = bcmul($order->getGrandTotal(), 100);
+
+        // check if the order amount and the total charge amount match
+        if($amountCheck != $orderTotalCheck) {
+            throw new \Exception('Payment and order totals do not match');
+        }
 
         $order->setCanSendNewEmailFlag(true);
 
@@ -260,7 +274,7 @@ class Helper
             // add comment to order history
             $message = __(
                 'Captured and invoiced amount of %1 for transaction %2',
-                $amount,
+                $amountFinal,
                 $transID
             );
 

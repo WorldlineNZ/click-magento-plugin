@@ -37,7 +37,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
 
         $params = $this->getRequest()->getParams();
 
-        //returned via "Display in Web Payments"
+        // returned via "Display in Web Payments"
         if(empty($params) || (empty($params['Status']) && empty($params['status']))) {
             $helper->log(__METHOD__. " no response params, find order instead");
 
