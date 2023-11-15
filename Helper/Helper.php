@@ -4,6 +4,8 @@ namespace Paymark\PaymarkClick\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Model\Order\Status\HistoryFactory;
 use Magento\Store\Model\ScopeInterface;
 
@@ -24,6 +26,11 @@ class Helper
      * @var \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface
      */
     private $_transactionBuilder;
+
+    /**
+     * @var \Magento\Quote\Api\CartRepositoryInterface
+     */
+    private $_quoteRepository;
 
     /**
      * @var \Magento\Checkout\Model\Session
@@ -72,6 +79,7 @@ class Helper
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         HistoryFactory $orderHistoryFactory,
+        CartRepositoryInterface $quoteRepository,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
     )
@@ -83,6 +91,8 @@ class Helper
         $this->_orderSender = $orderSender;
 
         $this->_objectManager = ObjectManager::getInstance();
+
+        $this->_quoteRepository = $quoteRepository;
 
         $this->_messageManager = $messageManager;
 
@@ -301,6 +311,8 @@ class Helper
     /**
      * Order failed, cancel order and reinstate quote
      *
+     * @todo this should be merged into a helper module along with Paymark OE
+     *
      * @param \Magento\Sales\Model\Order $order
      * @return \Magento\Sales\Model\Order
      * @throws \Exception
@@ -308,17 +320,39 @@ class Helper
     private function _orderFailed(\Magento\Sales\Model\Order $order)
     {
         // reset cart back into current session to retry
-        if ($this->_checkoutSession->restoreQuote()) {
+        if ($this->_restoreQuoteFromOrder($order)) {
             $this->log(__METHOD__ . " Quote has been rolled back.");
-
-            $order->setActionFlag(\Magento\Sales\Model\Order::ACTION_FLAG_CANCEL, true);
-            $order->cancel()->save();
-
         } else {
             $this->log(__METHOD__ . " Unable to rollback quote.");
         }
 
+        $order->setActionFlag(\Magento\Sales\Model\Order::ACTION_FLAG_CANCEL, true);
+        $order->cancel()->save();
+
         return $order;
+    }
+
+    /**
+     * Restore quote from order when the payment failed
+     *
+     * @todo this should be merged into a helper module along with Paymark OE
+     *
+     * @param \Magento\Sales\Model\Order $order
+     * @return bool
+     */
+    private function _restoreQuoteFromOrder(\Magento\Sales\Model\Order $order)
+    {
+        try {
+            $quote = $this->_quoteRepository->get($order->getQuoteId());
+            $quote->setIsActive(1)->setReservedOrderId(null);
+            $this->_quoteRepository->save($quote);
+            $this->_checkoutSession->replaceQuote($quote)->unsLastRealOrderId();
+            return true;
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            $this->log($e->getMessage());
+        }
+
+        return false;
     }
 
     /**
