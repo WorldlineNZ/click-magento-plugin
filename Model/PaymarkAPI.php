@@ -3,8 +3,9 @@
 namespace Paymark\PaymarkClick\Model;
 
 use Magento\Framework\Encryption\EncryptorInterface;
-use Zend\Http\Client;
-use Zend\Http\Request;
+use Laminas\Http\Request;
+use Laminas\Http\Client;
+use Laminas\Http\Exception\RuntimeException;
 
 class PaymarkAPI
 {
@@ -30,7 +31,7 @@ class PaymarkAPI
     private $_devUrl = 'https://uat.paymarkclick.co.nz/api/';
 
     /**
-     * @var \Zend\Http\Client
+     * @var Client
      */
     private $_client;
 
@@ -64,17 +65,17 @@ class PaymarkAPI
     /**
      * ApiHelper constructor.
      *
-     * @param Client $zendClient
+     * @param Client $requestClient
      * @param EncryptorInterface $encryptor
      */
     public function __construct(
-        Client $zendClient,
+        Client $requestClient,
         EncryptorInterface $encryptor
     )
     {
         $this->_encryptor = $encryptor;
 
-        $this->_client = $zendClient;
+        $this->_client = $requestClient;
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
@@ -182,11 +183,11 @@ class PaymarkAPI
 
             $response = $this->_client->getResponse();
 
-        } catch (\Zend\Http\Exception\RuntimeException $e) {
-            $this->_helper->log('Zend client error: ' . $e->getMessage());
+        } catch (RuntimeException $e) {
+            $this->_helper->log('Laminas client error: ' . $e->getMessage());
             throw new \Exception($e->getMessage());
         } catch (\Exception $e) {
-            $this->_helper->log('Zend client error: ' . $e->getMessage());
+            $this->_helper->log('Laminas client error: ' . $e->getMessage());
             throw new \Exception($e->getMessage());
         }
 
@@ -209,7 +210,7 @@ class PaymarkAPI
     }
 
     /**
-     * Apply auth header to Zend Client
+     * Apply auth header to Client
      */
     private function doAuthorise()
     {
