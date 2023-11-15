@@ -25,6 +25,8 @@ php bin/magento setup:upgrade
 
 You will need to register for Paymark Click before configuring this module. Visit www.paymark.co.nz for more info.
 
+For this module to work correctly, you must set the **Return Option** to **Post to Return URL** in the Click Merchant Console.
+
 After the module has been installed go to `Stores > Settings > Configuration > Sales > Payment Methods` in the Magento Admin to find the configuration options.
 
 The configuration options are as follows:

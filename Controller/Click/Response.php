@@ -38,37 +38,49 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
         $params = $this->getRequest()->getParams();
 
         // returned via "Display in Web Payments"
-        if(empty($params) || (empty($params['Status']) && empty($params['status']))) {
-            $helper->log(__METHOD__. " no response params, find order instead");
+        // since v0.4.0: M2.4 has a problem with retrieving last real order on return, so this is no longer working
+        /*if (empty($params) || (empty($params['Status']) && empty($params['status']))) {
+            $helper->log(__METHOD__ . " no response params, find order instead");
 
             $order = $checkoutSession->getLastRealOrder();
 
             // find transaction at Paymark
             $transaction = $apiHelper->findTransaction($order->getIncrementId());
 
-            if(!$transaction) {
+            if (!$transaction) {
                 // can't find transaction
-                $helper->log(__METHOD__. " Unable to find transaction via search");
+                $helper->log(__METHOD__ . " Unable to find transaction via search");
                 $helper->addMessageError('Unable to find transaction');
                 return $this->_redirect("checkout/cart");
             }
 
             // cast the transaction object to array
-            if(!is_array($transaction)) {
+            if (!is_array($transaction)) {
                 $transaction = (array)$transaction;
             }
 
             $params = $transaction;
         } else {
             $transaction = $apiHelper->getTransaction($params['TransactionId']);
-            if(!$transaction) {
-                $helper->log(__METHOD__. " Unable to find transaction");
+            if (!$transaction) {
+                $helper->log(__METHOD__ . " Unable to find transaction");
                 $helper->addMessageError('Unable to find transaction');
                 return $this->_redirect("checkout/cart");
             }
 
-            $params = (array) $transaction;
+            $params = (array)$transaction;
+        }*/
+
+        $transaction = $apiHelper->getTransaction($params['TransactionId']);
+
+        // double check returned info contains valid transaction id
+        if(!$transaction) {
+            $helper->log(__METHOD__. " Unable to find transaction");
+            $helper->addMessageError('Unable to find transaction');
+            return $this->_redirect("checkout/cart");
         }
+
+        $params = (array) $transaction;
 
         if($result = $helper->processTransaction($params)) {
             $this->_redirect("checkout/onepage/success", [
