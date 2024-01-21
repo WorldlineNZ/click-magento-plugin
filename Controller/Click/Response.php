@@ -71,23 +71,26 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
             $params = (array)$transaction;
         }*/
 
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultRedirectFactory->create();
+
         $transaction = $apiHelper->getTransaction($params['TransactionId']);
 
         // double check returned info contains valid transaction id
         if(!$transaction) {
             $helper->log(__METHOD__. " Unable to find transaction");
             $helper->addMessageError('Unable to find transaction');
-            return $this->_redirect("checkout/cart");
+            return $resultRedirect->setPath("checkout/cart");
         }
 
         $params = (array) $transaction;
 
         if($result = $helper->processTransaction($params)) {
-            $this->_redirect("checkout/onepage/success", [
+            return $resultRedirect->setPath("checkout/onepage/success", [
                 "_secure" => true
             ]);
         } else {
-            $this->_redirect("checkout/cart");
+            return $resultRedirect->setPath("checkout/cart");
         }
     }
 }
