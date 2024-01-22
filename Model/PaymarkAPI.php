@@ -141,7 +141,7 @@ class PaymarkAPI
         return $this->call(Request::METHOD_GET, 'transaction/search/', [
             'startDate' => $startDate,
             'endDate' => $endDate,
-            'particular' => $transactionId
+            'reference' => $transactionId
         ], true);
     }
 

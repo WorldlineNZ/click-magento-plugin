@@ -64,14 +64,12 @@ class ApiHelper extends AbstractHelper
 
             $authOnly = ($paymentAction == PaymentAction::ACTION_AUTHORIZE) ? true : false;
 
-            $reference = $this->getStoreName() . ' Payment';
-
             // create new payment redirect url
             $transaction = $this->_paymarkApi->createTransaction(
                 $order->getBaseGrandTotal(),
                 $return,
-                $reference,
                 $order->getIncrementId(),
+                ($this->getStoreName() . ' Payment'),
                 $authOnly
             );
 
@@ -122,7 +120,7 @@ class ApiHelper extends AbstractHelper
             $returnTransaction = null;
             foreach($transactions as $transaction) {
                 if(
-                    $transaction->particular == $incrementId &&
+                    $transaction->reference == $incrementId &&
                     $transaction->status == \Paymark\PaymarkClick\Helper\Helper::PAYMENT_SUCCESS
                 ) {
                     //found successful transaction for this order

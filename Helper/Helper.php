@@ -150,7 +150,7 @@ class Helper
         }
 
         $status = $this->getParamInsensitive('Status', $params);
-        $incrementId = $this->getParamInsensitive('Particular', $params);//increment id for transaction
+        $incrementId = $this->getParamInsensitive('Reference', $params);//increment id for transaction
 
         if(!$incrementId) {
             //no id, what happened?
@@ -371,7 +371,7 @@ class Helper
         $info['Type'] = $this->getParamInsensitive('Type', $params);
         $info['AccountId'] = $this->getParamInsensitive('AccountId', $params);
         $info['Status'] = $this->getParamInsensitive('Status', $params);
-        $info['Particular'] = $this->getParamInsensitive('Particular', $params);
+        $info['Reference'] = $this->getParamInsensitive('Reference', $params);
         $info['CardType'] = $this->getParamInsensitive('CardType', $params);
         $info['CardNumber'] = $this->getParamInsensitive('CardNumber', $params);
         $info['CardExpiry'] = $this->getParamInsensitive('CardExpiry', $params);
