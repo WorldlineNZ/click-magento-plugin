@@ -77,4 +77,7 @@
 
     <preference for="Paymark\PaymarkClick\Api\ClickManagementInterface" type="Paymark\PaymarkClick\Model\Api\ClickManagement" />
 
+    <type name="Magento\Framework\Session\SessionStartChecker">
+        <plugin name="click_session_checker" type="Paymark\PaymarkClick\Plugin\CallbackSessionChecker"/>
+    </type>
 </config>
