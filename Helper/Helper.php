@@ -268,9 +268,12 @@ class Helper
         // if there has been a surcharge, remove it from the total amount
         $amountFinal = (!empty($surcharge) && $surcharge > 0) ? ($amount - $surcharge) : $amount;
 
-        // multiply totals by 100 to get integers for comparison
-        $amountCheck = bcmul($amountFinal, 100);
-        $orderTotalCheck = bcmul($order->getGrandTotal(), 100);
+        // Compare against the base grand total: the charge was created from getBaseGrandTotal()
+        // (see ApiHelper::createPaymentUrl), so verifying against getGrandTotal() would fail every
+        // payment on a multi-currency store. Format to a 2dp string first so bcmul gets a clean
+        // numeric string rather than a float that may stringify with a floating-point tail.
+        $amountCheck = bcmul($this->_formatAmount($amountFinal), 100);
+        $orderTotalCheck = bcmul($this->_formatAmount($order->getBaseGrandTotal()), 100);
 
         // check if the order amount and the total charge amount match
         if($amountCheck != $orderTotalCheck) {
@@ -468,5 +471,17 @@ class Helper
         }
         return null;
     }
+
+    /**
+     * Normalise a monetary value to a fixed 2dp numeric string for exact bc comparison
+     *
+     * @param $amount
+     * @return string
+     */
+    private function _formatAmount($amount)
+    {
+        return number_format((float) $amount, 2, '.', '');
+    }
+
 
 }
