@@ -5,40 +5,46 @@ namespace Paymark\PaymarkClick\Helper;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Store\Model\StoreManagerInterface;
 use Paymark\PaymarkClick\Model\Adminhtml\Source\PaymentAction;
+use Paymark\PaymarkClick\Model\PaymarkAPI;
 
 class ApiHelper extends AbstractHelper
 {
 
     /**
-     * @var \Paymark\PaymarkClick\Helper\Helper
+     * @var Helper
      */
     private $_helper;
 
     /**
-     * @var \Paymark\PaymarkClick\Model\PaymarkAPI
+     * @var PaymarkAPI
      */
     private $_paymarkApi;
 
     /**
-     * @var \Magento\Framework\App\ObjectManager
+     * @var StoreManagerInterface
      */
-    private $_objectManager;
+    private $_storeManager;
 
     /**
-     * ApiHelper constructor.
-     *
      * @param Context $context
+     * @param Helper $helper
+     * @param PaymarkAPI $paymarkApi
+     * @param StoreManagerInterface $storeManager
      */
-    public function __construct(Context $context)
+    public function __construct(
+        Context $context,
+        Helper $helper,
+        PaymarkAPI $paymarkApi,
+        StoreManagerInterface $storeManager
+    )
     {
         parent::__construct($context);
 
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-
-        $this->_helper = $this->_objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
-
-        $this->_paymarkApi = $this->_objectManager->create("\Paymark\PaymarkClick\Model\PaymarkAPI");
+        $this->_helper = $helper;
+        $this->_paymarkApi = $paymarkApi;
+        $this->_storeManager = $storeManager;
     }
 
     /**
@@ -158,8 +164,7 @@ class ApiHelper extends AbstractHelper
      */
     public function getStoreName()
     {
-        $storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        return $storeManager->getStore()->getName();
+        return $this->_storeManager->getStore()->getName();
     }
 
 }

@@ -2,22 +2,51 @@
 
 namespace Paymark\PaymarkClick\Controller\Click;
 
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
+use Paymark\PaymarkClick\Helper\ApiHelper;
+use Paymark\PaymarkClick\Helper\Helper;
 
 class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
 
-    // disable CSRF protection on these inbound routes
-    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
-    {
-        return null;
-    }
+    /**
+     * @var ApiHelper
+     */
+    private $_apiHelper;
 
-    public function validateForCsrf(RequestInterface $request): ?bool
+    /**
+     * @var Helper
+     */
+    private $_helper;
+
+    /**
+     * @var Helper
+     */
+    private $_checkoutSession;
+
+    /**
+     * Response constructor.
+     *
+     * @param Context $context
+     * @param ApiHelper $apiHelper
+     * @param Helper $helper
+     */
+    public function __construct(
+        Context $context,
+        ApiHelper $apiHelper,
+        Helper $helper,
+        Session $checkoutSession,
+    )
     {
-        return true;
+        parent::__construct($context);
+
+        $this->_apiHelper = $apiHelper;
+        $this->_helper = $helper;
+        $this->_checkoutSession = $checkoutSession;
     }
 
     /**
@@ -27,13 +56,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
      */
     public function execute()
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-
-        $checkoutSession = $objectManager->get('\Magento\Checkout\Model\Session');
-        $apiHelper = $objectManager->get("\Paymark\PaymarkClick\Helper\ApiHelper");
-        $helper = $objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
-
-        $helper->log(__METHOD__. " execute response");
+        $this->_helper->log(__METHOD__. " execute response");
 
         $params = $this->getRequest()->getParams();
 
@@ -74,23 +97,34 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
 
-        $transaction = $apiHelper->getTransaction($params['TransactionId']);
+        $transaction = $this->_apiHelper->getTransaction($params['TransactionId']);
 
         // double check returned info contains valid transaction id
         if(!$transaction) {
-            $helper->log(__METHOD__. " Unable to find transaction");
-            $helper->addMessageError('Unable to find transaction');
+            $this->_helper->log(__METHOD__. " Unable to find transaction");
+            $this->_helper->addMessageError('Unable to find transaction');
             return $resultRedirect->setPath("checkout/cart");
         }
 
         $params = (array) $transaction;
 
-        if($result = $helper->processTransaction($params)) {
+        if($this->_helper->processTransaction($params)) {
             return $resultRedirect->setPath("checkout/onepage/success", [
                 "_secure" => true
             ]);
         } else {
             return $resultRedirect->setPath("checkout/cart");
         }
+    }
+
+    // disable CSRF protection on these inbound routes
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }

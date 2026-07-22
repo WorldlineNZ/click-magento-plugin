@@ -2,12 +2,17 @@
 
 namespace Paymark\PaymarkClick\Helper;
 
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use Magento\Sales\Model\Order\Status\HistoryFactory;
+use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
+use Paymark\PaymarkClick\Logger\PaymentLogger;
 
 class Helper
 {
@@ -18,12 +23,12 @@ class Helper
     private $_config;
 
     /**
-     * @var ObjectManager
+     * @var OrderFactory
      */
-    private $_objectManager;
+    private $_orderFactory;
 
     /**
-     * @var \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface
+     * @var BuilderInterface
      */
     private $_transactionBuilder;
 
@@ -33,7 +38,7 @@ class Helper
     private $_quoteRepository;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     private $_checkoutSession;
 
@@ -43,17 +48,17 @@ class Helper
     private $_orderHistoryFactory;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface
+     * @var ManagerInterface
      */
     private $_messageManager;
 
     /**
-     * @var  \Magento\Sales\Model\Order\Email\Sender\OrderSender
+     * @var  OrderSender
      */
     private $_orderSender;
 
     /**
-     * @var \Paymark\PaymarkClick\Logger\PaymentLogger
+     * @var PaymentLogger
      */
     private $_logger;
 
@@ -70,37 +75,45 @@ class Helper
     const TYPE_OE_PAYMENT = 'OE_PAYMENT';
 
     /**
-     * Helper constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param HistoryFactory $orderHistoryFactory
-     * @param \Magento\Framework\Message\ManagerInterface $messageManager
-     * @param \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
+     * @param CartRepositoryInterface $quoteRepository
+     * @param ManagerInterface $messageManager
+     * @param OrderSender $orderSender
+     * @param OrderFactory $orderFactory
+     * @param BuilderInterface $transactionBuilder
+     * @param Session $checkoutSession
+     * @param PaymentLogger $logger
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         HistoryFactory $orderHistoryFactory,
         CartRepositoryInterface $quoteRepository,
-        \Magento\Framework\Message\ManagerInterface $messageManager,
-        \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
+        ManagerInterface $messageManager,
+        OrderSender $orderSender,
+        OrderFactory $orderFactory,
+        BuilderInterface $transactionBuilder,
+        Session $checkoutSession,
+        PaymentLogger $logger
     )
     {
         $this->_config = $scopeConfig;
 
         $this->_orderHistoryFactory = $orderHistoryFactory;
 
-        $this->_orderSender = $orderSender;
+        $this->_orderFactory = $orderFactory;
 
-        $this->_objectManager = ObjectManager::getInstance();
+        $this->_orderSender = $orderSender;
 
         $this->_quoteRepository = $quoteRepository;
 
         $this->_messageManager = $messageManager;
 
-        $this->_transactionBuilder = $this->_objectManager->get('\Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface');
+        $this->_transactionBuilder = $transactionBuilder;
 
-        $this->_checkoutSession = $this->_objectManager->get('\Magento\Checkout\Model\Session');
+        $this->_checkoutSession = $checkoutSession;
 
-        $this->_logger = $this->_objectManager->get("\Paymark\PaymarkClick\Logger\PaymentLogger");
+        $this->_logger = $logger;
     }
 
     /**
@@ -348,7 +361,7 @@ class Helper
             $this->_quoteRepository->save($quote);
             $this->_checkoutSession->replaceQuote($quote)->unsLastRealOrderId();
             return true;
-        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+        } catch (NoSuchEntityException $e) {
             $this->log($e->getMessage());
         }
 
@@ -429,10 +442,10 @@ class Helper
      */
     private function _getOrderByIncrementId($incrementId)
     {
-        $collection = $this->_objectManager->create('Magento\Sales\Model\Order');
-        $orderInfo = $collection->loadByIncrementId($incrementId);
+        $factory = $this->_orderFactory->create();
+        $order = $factory->loadByIncrementId($incrementId);
 
-        return $orderInfo->getId() ? $orderInfo : null;
+        return $order->getId() ? $order : null;
     }
 
     /**

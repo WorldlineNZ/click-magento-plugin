@@ -2,38 +2,41 @@
 
 namespace Paymark\PaymarkClick\Model\Api;
 
+use Magento\Checkout\Model\Session;
+use Paymark\PaymarkClick\Helper\ApiHelper;
+use Paymark\PaymarkClick\Helper\Helper;
+
 class ClickManagement
 {
 
     /**
-     *@var \Paymark\PaymarkClick\Helper\ApiHelper
+     *@var ApiHelper
      */
     private $_api;
 
     /**
-     * @var \Paymark\PaymarkClick\Helper\Helper
+     * @var Helper
      */
     private $_helper;
 
     /**
-    *  @var \Magento\Checkout\Model\Session
+    *  @var Session
     */
     private $_checkoutSession;
 
     /**
-     * ClickManagement constructor.
-     *
-     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param Session $checkoutSession
+     * @param Helper $paymarkHelper
+     * @param ApiHelper $apiHelper
      */
-    public function __construct(\Magento\Checkout\Model\Session $checkoutSession)
+    public function __construct(
+        Session $checkoutSession,
+        Helper $paymarkHelper,
+        ApiHelper $apiHelper,
+    )
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-
-        $this->_helper = $objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
-        $this->_helper->log('Click management');
-
-        $this->_api = $objectManager->create("\Paymark\PaymarkClick\Helper\ApiHelper");
-
+        $this->_helper = $paymarkHelper;
+        $this->_api = $apiHelper;
         $this->_checkoutSession = $checkoutSession;
     }
 

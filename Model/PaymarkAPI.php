@@ -6,6 +6,7 @@ use Magento\Framework\Encryption\EncryptorInterface;
 use Laminas\Http\Request;
 use Laminas\Http\Client;
 use Laminas\Http\Exception\RuntimeException;
+use Paymark\PaymarkClick\Helper\Helper;
 
 class PaymarkAPI
 {
@@ -63,24 +64,30 @@ class PaymarkAPI
     const CMD_CLICK = '_xclick';
 
     /**
-     * ApiHelper constructor.
+     * PaymarkAPI constructor.
      *
      * @param Client $requestClient
      * @param EncryptorInterface $encryptor
+     * @param Helper $paymarkHelper
      */
     public function __construct(
         Client $requestClient,
-        EncryptorInterface $encryptor
+        EncryptorInterface $encryptor,
+        Helper $paymarkHelper,
     )
     {
         $this->_encryptor = $encryptor;
-
         $this->_client = $requestClient;
+        $this->_helper = $paymarkHelper;
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->setupParams();
+    }
 
-        $this->_helper = $objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
-
+    /**
+     * @return void
+     */
+    public function setupParams()
+    {
         $this->_prod = $this->_helper->getConfig('debug') == 0 ? true : false;
 
         $this->_username = $this->_helper->getConfig('user');
