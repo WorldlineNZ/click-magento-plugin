@@ -106,47 +106,6 @@ class ApiHelper extends AbstractHelper
     }
 
     /**
-     * Attempt to search for transaction by increment id, for today.
-     * If there is a successful transaction, return that one, otherwise
-     * return the latest failed one
-     *
-     * @param $incrementId
-     * @return bool
-     */
-    public function findTransaction($incrementId)
-    {
-        //@todo fix dates
-        $transactions = $this->_paymarkApi->searchTransaction(
-            date('Y-m-d 00:00:00', strtotime('-1 day')),
-            date('Y-m-d 23:59:59', strtotime('+1 day')),
-            $incrementId
-        );
-
-        if($transactions && count($transactions) > 0) {
-            $returnTransaction = null;
-            foreach($transactions as $transaction) {
-                if(
-                    $transaction->reference == $incrementId &&
-                    $transaction->status == \Paymark\PaymarkClick\Helper\Helper::PAYMENT_SUCCESS
-                ) {
-                    //found successful transaction for this order
-                    $returnTransaction = $transaction;
-                    break;
-                }
-            }
-
-            //no successfull transaction, so just return the latest one for this order (first in the list)
-            if(!$returnTransaction) {
-                $returnTransaction = reset($transactions);
-            }
-
-            return $returnTransaction;
-        }
-
-        return false;
-    }
-
-    /**
      * Get a transaction by id via the API
      *
      * @param $transactionId

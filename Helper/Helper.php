@@ -324,8 +324,6 @@ class Helper
     /**
      * Order failed, cancel order and reinstate quote
      *
-     * @todo this should be merged into a helper module along with Paymark OE
-     *
      * @param \Magento\Sales\Model\Order $order
      * @return \Magento\Sales\Model\Order
      * @throws \Exception
@@ -347,8 +345,6 @@ class Helper
 
     /**
      * Restore quote from order when the payment failed
-     *
-     * @todo this should be merged into a helper module along with Paymark OE
      *
      * @param \Magento\Sales\Model\Order $order
      * @return bool

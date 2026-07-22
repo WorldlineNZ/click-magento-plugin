@@ -60,39 +60,9 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
 
         $params = $this->getRequest()->getParams();
 
-        // returned via "Display in Web Payments"
-        // since v0.4.0: M2.4 has a problem with retrieving last real order on return, so this is no longer working
-        /*if (empty($params) || (empty($params['Status']) && empty($params['status']))) {
-            $helper->log(__METHOD__ . " no response params, find order instead");
-
-            $order = $checkoutSession->getLastRealOrder();
-
-            // find transaction at Paymark
-            $transaction = $apiHelper->findTransaction($order->getIncrementId());
-
-            if (!$transaction) {
-                // can't find transaction
-                $helper->log(__METHOD__ . " Unable to find transaction via search");
-                $helper->addMessageError('Unable to find transaction');
-                return $this->_redirect("checkout/cart");
-            }
-
-            // cast the transaction object to array
-            if (!is_array($transaction)) {
-                $transaction = (array)$transaction;
-            }
-
-            $params = $transaction;
-        } else {
-            $transaction = $apiHelper->getTransaction($params['TransactionId']);
-            if (!$transaction) {
-                $helper->log(__METHOD__ . " Unable to find transaction");
-                $helper->addMessageError('Unable to find transaction');
-                return $this->_redirect("checkout/cart");
-            }
-
-            $params = (array)$transaction;
-        }*/
+        // note: requires "Return Option" set to "Post to Return URL" in the Click Merchant Console;
+        // since v0.4.0 the "Display in Web Payments" return (no params, look up last real order) is
+        // no longer supported due to an M2.4 problem retrieving the last real order on return
 
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();

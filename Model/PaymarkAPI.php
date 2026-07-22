@@ -132,7 +132,7 @@ class PaymarkAPI
      */
     public function getTransaction($transactionId)
     {
-        return $this->call(Request::METHOD_GET, 'transaction/search/' . $transactionId, [], true);
+        return $this->call(Request::METHOD_GET, 'transaction/search/' . rawurlencode($transactionId), [], true);
     }
 
     /**
