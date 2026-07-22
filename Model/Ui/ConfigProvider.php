@@ -52,7 +52,6 @@ final class ConfigProvider implements ConfigProviderInterface
      */
     public function getClickLogo()
     {
-        $url =  $this->_assetRepo->getUrl("Paymark_PaymarkClick::images/logo.svg");;
-        return $url;
+        return $this->_assetRepo->getUrl("Paymark_PaymarkClick::images/logo.svg");
     }
 }

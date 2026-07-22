@@ -5,40 +5,46 @@ namespace Paymark\PaymarkClick\Helper;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Store\Model\StoreManagerInterface;
 use Paymark\PaymarkClick\Model\Adminhtml\Source\PaymentAction;
+use Paymark\PaymarkClick\Model\PaymarkAPI;
 
 class ApiHelper extends AbstractHelper
 {
 
     /**
-     * @var \Paymark\PaymarkClick\Helper\Helper
+     * @var Helper
      */
     private $_helper;
 
     /**
-     * @var \Paymark\PaymarkClick\Model\PaymarkAPI
+     * @var PaymarkAPI
      */
     private $_paymarkApi;
 
     /**
-     * @var \Magento\Framework\App\ObjectManager
+     * @var StoreManagerInterface
      */
-    private $_objectManager;
+    private $_storeManager;
 
     /**
-     * ApiHelper constructor.
-     *
      * @param Context $context
+     * @param Helper $helper
+     * @param PaymarkAPI $paymarkApi
+     * @param StoreManagerInterface $storeManager
      */
-    public function __construct(Context $context)
+    public function __construct(
+        Context $context,
+        Helper $helper,
+        PaymarkAPI $paymarkApi,
+        StoreManagerInterface $storeManager
+    )
     {
         parent::__construct($context);
 
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-
-        $this->_helper = $this->_objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
-
-        $this->_paymarkApi = $this->_objectManager->create("\Paymark\PaymarkClick\Model\PaymarkAPI");
+        $this->_helper = $helper;
+        $this->_paymarkApi = $paymarkApi;
+        $this->_storeManager = $storeManager;
     }
 
     /**
@@ -100,47 +106,6 @@ class ApiHelper extends AbstractHelper
     }
 
     /**
-     * Attempt to search for transaction by increment id, for today.
-     * If there is a successful transaction, return that one, otherwise
-     * return the latest failed one
-     *
-     * @param $incrementId
-     * @return bool
-     */
-    public function findTransaction($incrementId)
-    {
-        //@todo fix dates
-        $transactions = $this->_paymarkApi->searchTransaction(
-            date('Y-m-d 00:00:00', strtotime('-1 day')),
-            date('Y-m-d 23:59:59', strtotime('+1 day')),
-            $incrementId
-        );
-
-        if($transactions && count($transactions) > 0) {
-            $returnTransaction = null;
-            foreach($transactions as $transaction) {
-                if(
-                    $transaction->reference == $incrementId &&
-                    $transaction->status == \Paymark\PaymarkClick\Helper\Helper::PAYMENT_SUCCESS
-                ) {
-                    //found successful transaction for this order
-                    $returnTransaction = $transaction;
-                    break;
-                }
-            }
-
-            //no successfull transaction, so just return the latest one for this order (first in the list)
-            if(!$returnTransaction) {
-                $returnTransaction = reset($transactions);
-            }
-
-            return $returnTransaction;
-        }
-
-        return false;
-    }
-
-    /**
      * Get a transaction by id via the API
      *
      * @param $transactionId
@@ -158,8 +123,7 @@ class ApiHelper extends AbstractHelper
      */
     public function getStoreName()
     {
-        $storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        return $storeManager->getStore()->getName();
+        return $this->_storeManager->getStore()->getName();
     }
 
 }

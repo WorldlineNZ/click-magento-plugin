@@ -7,12 +7,39 @@ use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObject;
 use Magento\Sales\Model\Order\Payment\Interceptor;
+use Paymark\PaymarkClick\Helper\ApiHelper;
+use Paymark\PaymarkClick\Helper\Helper;
 
 /**
  * InitializeCommand
  */
 class InitializeCommand implements CommandInterface
 {
+
+    /**
+     * @var Helper
+     */
+    private $_helper;
+
+    /**
+     * @var ApiHelper
+     */
+    private $_apiHelper;
+
+    /**
+     * InitializeCommand constructor.
+     *
+     * @param Helper $helper
+     * @param ApiHelper $apiHelper
+     */
+    public function __construct(
+        Helper $helper,
+        ApiHelper $apiHelper
+    )
+    {
+        $this->_helper = $helper;
+        $this->_apiHelper = $apiHelper;
+    }
 
     /**
      * Basic initialize command to generate payment URL for
@@ -24,17 +51,12 @@ class InitializeCommand implements CommandInterface
      */
     public function execute(array $commandSubject)
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $helper = $objectManager->create("\Paymark\PaymarkClick\Helper\Helper");
-        $helper->log(__METHOD__. ' execute');
-
-        /** @var \Paymark\PaymarkClick\Helper\ApiHelper $apiHelper */
-        $apiHelper = $objectManager->create("\Paymark\PaymarkClick\Helper\ApiHelper");
+        $this->_helper->log(__METHOD__. ' execute');
 
         $orderState = $commandSubject['stateObject'];
-
         $paymentAction = $commandSubject['paymentAction'];
-        $helper->log(__METHOD__. ' action:' . $paymentAction);
+
+        $this->_helper->log(__METHOD__. ' action:' . $paymentAction);
 
         /** @var PaymentDataObject $paymentDO */
         $paymentDO = $commandSubject['payment'];
@@ -45,11 +67,11 @@ class InitializeCommand implements CommandInterface
         /** @var Interceptor $payment */
         $payment = $paymentDO->getPayment();
 
-        $helper->log(__METHOD__. " redirect orderId: {$order->getOrderIncrementId()}");
+        $this->_helper->log(__METHOD__. " redirect orderId: {$order->getOrderIncrementId()}");
 
         // generate redirect url
         try {
-            $url = $apiHelper->createPaymentUrl($payment, $orderState, $paymentAction);
+            $url = $this->_apiHelper->createPaymentUrl($payment, $orderState, $paymentAction);
 
             // save to additionalInformation for later
             $additionalInfo = $payment->getAdditionalInformation();
@@ -58,9 +80,9 @@ class InitializeCommand implements CommandInterface
             $payment->unsAdditionalInformation();
             $payment->setAdditionalInformation($additionalInfo);
 
-            $helper->log(__METHOD__. " set payment info with url");
+            $this->_helper->log(__METHOD__. " set payment info with url");
         } catch(\Exception $e) {
-            $helper->log(__METHOD__. " initialize exception");
+            $this->_helper->log(__METHOD__. " initialize exception");
             throw new LocalizedException(__($e->getMessage()));
         }
     }
