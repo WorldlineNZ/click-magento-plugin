@@ -358,7 +358,10 @@ class Helper
             $quote = $this->_quoteRepository->get($order->getQuoteId());
             $quote->setIsActive(1)->setReservedOrderId(null);
             $this->_quoteRepository->save($quote);
-            $this->_checkoutSession->replaceQuote($quote)->unsLastRealOrderId();
+
+            if ((int)$this->_checkoutSession->getLastRealOrder()->getId() === (int)$order->getId()) {
+                $this->_checkoutSession->replaceQuote($quote)->unsLastRealOrderId();
+            }
             return true;
         } catch (NoSuchEntityException $e) {
             $this->log($e->getMessage());
